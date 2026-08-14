@@ -42,9 +42,24 @@ test('main skill stays a bounded authoring router with progressive references', 
     'references/authoring-contract.md',
     'references/viewer-runtime.md',
     'references/delivery-contract.md',
+    'references/reverse-engineering-contract.md',
   ]) {
     assert.match(skill, new RegExp(reference.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.equal(existsSync(path.join(skillRoot, reference)), true, `${reference} must ship with the skill`);
+  }
+});
+
+test('reverse engineering stays evidence-first and never claims unverified facts', () => {
+  const contract = readFileSync(path.join(skillRoot, 'references', 'reverse-engineering-contract.md'), 'utf8');
+  assert.match(skill, /reverse inventory/);
+  assert.match(skill, /reverse validate/);
+  assert.match(skill, /reverse freeze/);
+  assert.match(skill, /observed\|inferred\|unknown/);
+  assert.match(contract, /Never derive runtime causality from a folder name/);
+  assert.match(contract, /Not identified from repository evidence\./);
+  assert.match(contract, /<redacted>/);
+  for (const code of ['EVIDENCE_MISSING', 'TRACEABILITY_MISSING', 'FROZEN_ARTIFACT_MODIFIED', 'SECRET_LEAKED']) {
+    assert.match(contract, new RegExp(code));
   }
 });
 
