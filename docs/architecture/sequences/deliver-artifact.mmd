@@ -1,0 +1,19 @@
+%% archify:artifact sequence
+%% archify:elements act-agent, cmp-cli, cmp-typed-renderers, cmp-artifact-checker, art-html, flow-deliver-artifact
+%% archify:relationships rel-cli-renderers, rel-cli-checker, rel-cli-artifact
+%% archify:note Ordered from commandDeliver in archify/bin/archify.mjs; only calls whose order the code proves are included.
+sequenceDiagram
+    participant Agent
+    participant CLI
+    participant Renderer
+    participant Checker
+    participant Filesystem
+
+    Agent->>CLI: deliver <type> <input.json> <output.html>
+    CLI->>Filesystem: read specification, write private snapshot
+    CLI->>Renderer: spawn render-<type>.mjs with the snapshot
+    Renderer-->>CLI: candidate HTML or structured diagnostics
+    CLI->>Checker: check-render-output.mjs candidate
+    Checker-->>CLI: artifact checks and composition receipt
+    CLI->>Filesystem: rename candidate onto the target
+    CLI-->>Agent: receipt with SHA-256 and byte counts

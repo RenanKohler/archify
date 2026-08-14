@@ -89,6 +89,16 @@ try {
 
   run(['--help']);
   run(['doctor']);
+
+  // The reverse pipeline must refuse an unverifiable bundle in the packaged
+  // skill exactly as it does in the repository checkout.
+  const reverseFailure = JSON.parse(runExpectFailure([
+    'reverse', 'validate', path.join(scratch, 'missing-docs'), '--json',
+  ]));
+  if (reverseFailure.ok || !reverseFailure.diagnostics?.some((entry) => entry.contractCode === 'ARTIFACT_MISSING')) {
+    throw new Error('packaged reverse validate did not return the expected missing-bundle diagnostic');
+  }
+
   run(['demo', path.join(scratch, 'demo')]);
   run(['examples']);
 

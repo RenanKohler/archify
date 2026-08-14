@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "repository": {
+    "url": "https://github.com/RenanKohler/archify",
+    "revision": "992d9a68ff1827e9699722f7f1946cbeb57484fc"
+  },
+  "evidence": [
+    {
+      "id": "ev-package-manifest",
+      "file": "archify/package.json",
+      "symbol": "\"name\": \"archify\"",
+      "supports": ["sys-archify"]
+    },
+    {
+      "id": "ev-skill-entry",
+      "file": "archify/SKILL.md",
+      "symbol": "Fast authoring path",
+      "supports": ["act-agent"]
+    },
+    {
+      "id": "ev-skill-cli-command",
+      "file": "archify/SKILL.md",
+      "symbol": "node bin/archify.mjs deliver",
+      "supports": ["rel-agent-system"]
+    },
+    {
+      "id": "ev-viewer-template",
+      "file": "archify/assets/template.html",
+      "symbol": "ARCHIFY:SVG_SLOT",
+      "supports": ["act-reader", "cmp-viewer-template", "rel-reader-artifact"]
+    },
+    {
+      "id": "ev-cli-router",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "switch (command)",
+      "supports": ["cmp-cli"]
+    },
+    {
+      "id": "ev-cli-renderer-path",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "function rendererPath",
+      "supports": ["rel-cli-renderers"]
+    },
+    {
+      "id": "ev-cli-checker-spawn",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "scripts/check-render-output.mjs",
+      "supports": ["rel-cli-checker"]
+    },
+    {
+      "id": "ev-cli-delta-import",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "delta/architecture-delta.mjs",
+      "supports": ["rel-cli-delta"]
+    },
+    {
+      "id": "ev-cli-reverse-import",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "'../reverse/bundle.mjs'",
+      "supports": ["rel-cli-reverse"]
+    },
+    {
+      "id": "ev-cli-visual-import",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "'./visual-check.mjs'",
+      "supports": ["rel-cli-visual"]
+    },
+    {
+      "id": "ev-cli-preview-import",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "'./preview.mjs'",
+      "supports": ["rel-cli-preview"]
+    },
+    {
+      "id": "ev-delivery-commit",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "fs.renameSync(candidatePath, outputPath)",
+      "supports": ["art-html", "rel-cli-artifact", "rel-system-artifact", "flow-deliver-artifact", "life-delivery-stages"]
+    },
+    {
+      "id": "ev-delivery-stages",
+      "file": "archify/bin/archify.mjs",
+      "symbol": "stage: 'render'",
+      "supports": ["life-delivery-stages"]
+    },
+    {
+      "id": "ev-renderer-architecture",
+      "file": "archify/renderers/architecture/render-architecture.mjs",
+      "symbol": "shared/cli.mjs",
+      "supports": ["cmp-typed-renderers", "rel-renderers-runtime"]
+    },
+    {
+      "id": "ev-renderer-workflow",
+      "file": "archify/renderers/workflow/render-workflow.mjs",
+      "symbol": "shared/cli.mjs",
+      "supports": ["cmp-typed-renderers"]
+    },
+    {
+      "id": "ev-renderer-sequence",
+      "file": "archify/renderers/sequence/render-sequence.mjs",
+      "symbol": "shared/cli.mjs",
+      "supports": ["cmp-typed-renderers"]
+    },
+    {
+      "id": "ev-renderer-dataflow",
+      "file": "archify/renderers/dataflow/render-dataflow.mjs",
+      "symbol": "shared/cli.mjs",
+      "supports": ["cmp-typed-renderers"]
+    },
+    {
+      "id": "ev-renderer-lifecycle",
+      "file": "archify/renderers/lifecycle/render-lifecycle.mjs",
+      "symbol": "shared/cli.mjs",
+      "supports": ["cmp-typed-renderers"]
+    },
+    {
+      "id": "ev-runtime-template-read",
+      "file": "archify/renderers/shared/cli.mjs",
+      "symbol": "assets/template.html",
+      "supports": ["cmp-renderer-runtime", "rel-runtime-template", "flow-deliver-artifact"]
+    },
+    {
+      "id": "ev-runtime-validator-import",
+      "file": "archify/renderers/shared/cli.mjs",
+      "symbol": "import { validateSchema } from './validator.mjs'",
+      "supports": ["rel-runtime-validators"]
+    },
+    {
+      "id": "ev-runtime-evidence-import",
+      "file": "archify/renderers/shared/cli.mjs",
+      "symbol": "import { verifyRepositoryEvidence } from './repository-evidence.mjs'",
+      "supports": ["rel-runtime-evidence"]
+    },
+    {
+      "id": "ev-generated-validators",
+      "file": "archify/renderers/shared/validator.mjs",
+      "symbol": "import * as validators from './generated-validators.mjs'",
+      "supports": ["cmp-schema-validators"]
+    },
+    {
+      "id": "ev-repository-evidence-verify",
+      "file": "archify/renderers/shared/repository-evidence.mjs",
+      "symbol": "export function verifyRepositoryEvidence",
+      "supports": ["cmp-repository-evidence"]
+    },
+    {
+      "id": "ev-repository-evidence-git",
+      "file": "archify/renderers/shared/repository-evidence.mjs",
+      "symbol": "spawnSync('git'",
+      "supports": ["ext-git", "rel-evidence-git", "rel-system-git"]
+    },
+    {
+      "id": "ev-artifact-checker",
+      "file": "archify/scripts/check-render-output.mjs",
+      "symbol": "collectAmbiguousCorridors",
+      "supports": ["cmp-artifact-checker", "flow-deliver-artifact"]
+    },
+    {
+      "id": "ev-delta-compare",
+      "file": "archify/delta/architecture-delta.mjs",
+      "symbol": "export function compareArchitecture",
+      "supports": ["cmp-architecture-delta"]
+    },
+    {
+      "id": "ev-visual-check-runtime",
+      "file": "archify/bin/visual-check.mjs",
+      "symbol": "export async function runVisualCheck",
+      "supports": ["cmp-visual-check"]
+    },
+    {
+      "id": "ev-visual-check-chrome",
+      "file": "archify/bin/visual-check.mjs",
+      "symbol": "ARCHIFY_CHROME",
+      "supports": ["ext-chrome", "rel-visual-chrome", "rel-system-chrome"]
+    },
+    {
+      "id": "ev-preview-server",
+      "file": "archify/bin/preview.mjs",
+      "symbol": "http.createServer",
+      "supports": ["cmp-preview"]
+    },
+    {
+      "id": "ev-reverse-bundle",
+      "file": "archify/reverse/bundle.mjs",
+      "symbol": "export function validateBundle",
+      "supports": ["cmp-reverse-pipeline", "flow-reverse-validate"]
+    },
+    {
+      "id": "ev-reverse-freeze",
+      "file": "archify/reverse/bundle.mjs",
+      "symbol": "export function freezeBundle",
+      "supports": ["cmp-reverse-pipeline", "flow-reverse-validate"]
+    },
+    {
+      "id": "ev-reverse-evidence-check",
+      "file": "archify/reverse/model.mjs",
+      "symbol": "export function validateEvidenceIndex",
+      "supports": ["cmp-reverse-pipeline", "flow-reverse-validate"]
+    },
+    {
+      "id": "ev-reverse-git-spawn",
+      "file": "archify/reverse/model.mjs",
+      "symbol": "spawnSync('git'",
+      "supports": ["rel-reverse-git", "flow-reverse-validate"]
+    },
+    {
+      "id": "ev-reverse-mermaid",
+      "file": "archify/reverse/mermaid.mjs",
+      "symbol": "export function validateMermaid",
+      "supports": ["cmp-reverse-pipeline", "flow-reverse-validate"]
+    },
+    {
+      "id": "ev-reverse-openapi",
+      "file": "archify/reverse/openapi.mjs",
+      "symbol": "export function validateOpenApi",
+      "supports": ["cmp-reverse-pipeline", "flow-reverse-validate"]
+    },
+    {
+      "id": "ev-reverse-inventory",
+      "file": "archify/reverse/inventory.mjs",
+      "symbol": "export function buildInventory",
+      "supports": ["cmp-reverse-pipeline"]
+    }
+  ]
+}

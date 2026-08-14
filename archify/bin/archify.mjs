@@ -27,6 +27,11 @@ function usage() {
   archify doctor
   archify demo [output-directory]
 
+Reverse engineering (Docs-as-Code):
+  archify reverse inventory [--repo-root path] [--out file] [--json]
+  archify reverse validate <docs-directory> [--repo-root path] [--strict] [--json]
+  archify reverse freeze <docs-directory> [--repo-root path] [--generated-at iso] [--json]
+
 Types:
   architecture, workflow, sequence, dataflow, lifecycle
 `;
@@ -1265,10 +1270,25 @@ async function commandDoctor() {
     missing: fs.existsSync(scenarioGuide) ? 0 : 1,
   });
 
+  const reverseRuntime = [
+    path.join(skillRoot, 'reverse/inventory.mjs'),
+    path.join(skillRoot, 'reverse/model.mjs'),
+    path.join(skillRoot, 'reverse/mermaid.mjs'),
+    path.join(skillRoot, 'reverse/openapi.mjs'),
+    path.join(skillRoot, 'reverse/bundle.mjs'),
+  ];
+  const reverseMissing = reverseRuntime.filter((file) => !fs.existsSync(file)).length;
+  checks.push({
+    label: 'Reverse-engineering Docs-as-Code runtime',
+    ok: reverseMissing === 0,
+    missing: reverseMissing,
+  });
+
   const authoringReferences = [
     path.join(skillRoot, 'references', 'authoring-contract.md'),
     path.join(skillRoot, 'references', 'viewer-runtime.md'),
     path.join(skillRoot, 'references', 'delivery-contract.md'),
+    path.join(skillRoot, 'references', 'reverse-engineering-contract.md'),
   ];
   const authoringReferencesMissing = authoringReferences.filter((file) => !fs.existsSync(file)).length;
   checks.push({
@@ -1425,6 +1445,111 @@ function commandDemo(args) {
   console.log('  archify render architecture <input.json> <output.html>');
 }
 
+function extractReverseOptions(args, { flags = [], values = [] } = {}) {
+  const positional = [];
+  const options = {};
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (flags.includes(arg)) {
+      options[arg.slice(2)] = true;
+      continue;
+    }
+    const valueFlag = values.find((name) => arg === name || arg.startsWith(`${name}=`));
+    if (valueFlag) {
+      const value = arg.includes('=') ? arg.slice(arg.indexOf('=') + 1) : args[++index];
+      if (!value || value.startsWith('--')) fail(`${valueFlag} requires a value.`);
+      options[valueFlag.slice(2)] = value;
+      continue;
+    }
+    if (arg.startsWith('--')) fail(`Unknown reverse option "${arg}".`);
+    positional.push(arg);
+  }
+  return { positional, options };
+}
+
+function reportReverseReceipt(receipt, json, { headline }) {
+  if (json) {
+    console.log(JSON.stringify(receipt, null, 2));
+  } else {
+    console.log(headline(receipt));
+    if (receipt.diagnostics?.length) {
+      const { formatDiagnostics } = reverseFormatters;
+      console.error(formatDiagnostics(receipt.diagnostics));
+    }
+  }
+  if (!receipt.ok) process.exitCode = 1;
+}
+
+let reverseFormatters = {};
+
+async function commandReverse(args) {
+  const [subcommand, ...rest] = args;
+  if (!subcommand || ['-h', '--help', 'help'].includes(subcommand)) {
+    console.log(usage());
+    return;
+  }
+
+  reverseFormatters = await import('../reverse/diagnostics.mjs');
+
+  if (subcommand === 'inventory') {
+    const { positional, options } = extractReverseOptions(rest, {
+      flags: ['--json'],
+      values: ['--repo-root', '--out', '--revision'],
+    });
+    if (positional.length > 1) fail(usage());
+    const { openRepository } = await import('../reverse/model.mjs');
+    const { buildInventory, renderInventoryMarkdown } = await import('../reverse/inventory.mjs');
+    const opened = openRepository(options['repo-root'] || positional[0] || process.cwd());
+    if (!opened.ok) fail(`Could not open the repository: ${opened.reason}.`, 1);
+    let inventory;
+    try {
+      inventory = buildInventory(opened.repository, { revision: options.revision });
+    } catch (error) {
+      fail(error.message, 1);
+    }
+    const markdown = renderInventoryMarkdown(inventory);
+    if (options.out) {
+      fs.mkdirSync(path.dirname(path.resolve(options.out)), { recursive: true });
+      fs.writeFileSync(path.resolve(options.out), markdown);
+    }
+    if (options.json) console.log(JSON.stringify({ schemaVersion: 1, ok: true, command: 'reverse inventory', ...inventory }, null, 2));
+    else console.log(options.out ? `wrote ${path.resolve(options.out)}\n\n${markdown}` : markdown);
+    return;
+  }
+
+  if (subcommand === 'validate' || subcommand === 'freeze') {
+    const { positional, options } = extractReverseOptions(rest, {
+      flags: ['--json', '--strict'],
+      values: ['--repo-root', '--generated-at'],
+    });
+    if (positional.length !== 1) fail(usage());
+    const { validateBundle, freezeBundle } = await import('../reverse/bundle.mjs');
+    const docsRoot = path.resolve(positional[0]);
+    const repoRoot = options['repo-root'] ? path.resolve(options['repo-root']) : undefined;
+    if (subcommand === 'validate') {
+      const receipt = validateBundle({ docsRoot, repoRoot, strict: Boolean(options.strict) });
+      reportReverseReceipt(receipt, Boolean(options.json), {
+        headline: (result) => [
+          `${result.ok ? 'ok' : 'failed'} reverse bundle ${result.docs}`,
+          `${result.coverage.artifacts} artifacts; ${result.coverage.elements} elements; ${result.coverage.relationships} relationships; ${result.coverage.evidence} evidence entries`,
+          `observed ${result.coverage.observed}; inferred ${result.coverage.inferred}; unknown ${result.coverage.unknown}`,
+          `${result.summary.errors} errors, ${result.summary.warnings} warnings; evidence verified: ${result.evidenceVerified}`,
+        ].join('\n'),
+      });
+      return;
+    }
+    const receipt = freezeBundle({ docsRoot, repoRoot, generatedAt: options['generated-at'] });
+    reportReverseReceipt(receipt, Boolean(options.json), {
+      headline: (result) => (result.frozen
+        ? `frozen ${result.manifest}\n${result.artifacts.length} artifacts; revision ${result.repository?.revision || 'unknown'}; manifest sha256 ${result.manifestSha256.slice(0, 12)}`
+        : `refused to freeze ${result.docs}: ${result.summary.errors} validation error(s) must be repaired first`),
+    });
+    return;
+  }
+
+  fail(`Unknown reverse subcommand "${subcommand}".\n\n${usage()}`);
+}
+
 function commandValidate(args) {
   const qualityArgs = extractQualityArgs(args);
   const repoArgs = extractRepoRootArgs(qualityArgs.rest);
@@ -1567,6 +1692,9 @@ switch (command) {
     break;
   case 'visual-check':
     await commandVisualCheck(args);
+    break;
+  case 'reverse':
+    await commandReverse(args);
     break;
   case 'guide':
     await commandGuide(args);

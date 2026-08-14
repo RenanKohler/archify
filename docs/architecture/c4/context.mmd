@@ -1,0 +1,16 @@
+%% archify:artifact c4-context
+%% archify:elements act-agent, sys-archify, art-html, act-reader, ext-git, ext-chrome
+%% archify:relationships rel-agent-system, rel-system-artifact, rel-reader-artifact, rel-system-git, rel-system-chrome
+flowchart LR
+    agent[Authoring agent]
+    archify[Archify skill package]
+    artifact[(Delivered HTML artifact)]
+    reader[Artifact reader]
+    git[Git]
+    chrome[Chrome / Chromium]
+
+    agent -->|CLI: validate, deliver| archify
+    archify -->|atomic file write| artifact
+    reader -->|opens in a browser| artifact
+    archify -->|process: cat-file, show| git
+    archify -->|DevTools pipe| chrome

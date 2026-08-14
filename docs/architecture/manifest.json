@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "generatedAt": "2026-08-14T22:34:36.637Z",
+  "repository": "https://github.com/RenanKohler/archify",
+  "revision": "992d9a68ff1827e9699722f7f1946cbeb57484fc",
+  "artifacts": [
+    {
+      "path": "architecture/README.md",
+      "type": "markdown",
+      "validation": "passed",
+      "sha256": "8c38a5172d4d4c2970a2913d2423a6be6f96697d41439d7fc747c69029655f36",
+      "bytes": 2176
+    },
+    {
+      "path": "architecture/adr/ADR-0001-typed-json-ir.md",
+      "type": "adr",
+      "validation": "passed",
+      "sha256": "b316833dde7ce8142ea377e61813963dc162f016349f6ca0536b05462ff481b3",
+      "bytes": 1621
+    },
+    {
+      "path": "architecture/adr/ADR-0002-zero-dependency-runtime.md",
+      "type": "adr",
+      "validation": "passed",
+      "sha256": "961f20f467a7f5fa9f4502cd2e885e7eb2382678ed4396e9fd106158d623a5fb",
+      "bytes": 1519
+    },
+    {
+      "path": "architecture/adr/ADR-0003-atomic-verified-delivery.md",
+      "type": "adr",
+      "validation": "passed",
+      "sha256": "32d6d12c796a3eed2d8cae046caef2b44f7abf4977789b36a69fd523fb44c816",
+      "bytes": 1290
+    },
+    {
+      "path": "architecture/adr/ADR-0004-revision-pinned-evidence.md",
+      "type": "adr",
+      "validation": "passed",
+      "sha256": "6aeafa04bca6f57b76288e7edd0a2d77105e9ab86e9d552c92c26ca82ee05071",
+      "bytes": 1400
+    },
+    {
+      "path": "architecture/architecture.md",
+      "type": "arc42",
+      "validation": "passed",
+      "sha256": "9bde959d08a2d4e0cad26bad6bf4c9a500d0fe6c37025b5f513057d22aff71d9",
+      "bytes": 7363
+    },
+    {
+      "path": "architecture/c4/container.mmd",
+      "type": "c4-container",
+      "validation": "passed",
+      "sha256": "1a03df0009ec51d8682ab5928f97df091e0f3c8b564cf0be00de7bbc10c1d5c3",
+      "bytes": 1145
+    },
+    {
+      "path": "architecture/c4/context.mmd",
+      "type": "c4-context",
+      "validation": "passed",
+      "sha256": "50106ca4ec8c735253dcc9cf584dfdc59797914825bcd24874d1d7a18e490f4f",
+      "bytes": 640
+    },
+    {
+      "path": "architecture/coverage.md",
+      "type": "coverage",
+      "validation": "passed",
+      "sha256": "006f0ab1519eee6b3bfdd543dc3757f88dbf6491d9cb3928348470b2353b0437",
+      "bytes": 1909
+    },
+    {
+      "path": "architecture/dataflows/docs-as-code.mmd",
+      "type": "dataflow",
+      "validation": "passed",
+      "sha256": "be788a245f9fb4df7f80c2baa42a9e531727a4800ccc7771f50f8424bc5d8e98",
+      "bytes": 773
+    },
+    {
+      "path": "architecture/dependencies.mmd",
+      "type": "dependencies",
+      "validation": "passed",
+      "sha256": "43bdfdf5e22b990a4d3d6c52666298674bcb4766f74cb421a3d0de6f67ee1dba",
+      "bytes": 1028
+    },
+    {
+      "path": "architecture/domain.md",
+      "type": "domain",
+      "validation": "passed",
+      "sha256": "9b6cfb9a0bf62f71386423f7b9248cc1cdc2ee7166aa534bd0afd7f5054edf39",
+      "bytes": 3332
+    },
+    {
+      "path": "architecture/evidence.json",
+      "type": "evidence-index",
+      "validation": "passed",
+      "sha256": "f80e7cb80f507b8cf636f433a4c6eacfe3e9b26b6a83d4f5b19de72129bd47c0",
+      "bytes": 7248
+    },
+    {
+      "path": "architecture/lifecycles/delivery-stages.mmd",
+      "type": "lifecycle",
+      "validation": "passed",
+      "sha256": "13846e6bbd140e9bf7b56bad92144efacb18d603948d1d867b0da4ed32f2a266",
+      "bytes": 885
+    },
+    {
+      "path": "architecture/repository-inventory.md",
+      "type": "repository-inventory",
+      "validation": "passed",
+      "sha256": "287a7cad0a5f3f6f2e09bdb7ad90dc699424ecabc6eb43c055c3ab8ca32ea146",
+      "bytes": 7835
+    },
+    {
+      "path": "architecture/sequences/deliver-artifact.mmd",
+      "type": "sequence",
+      "validation": "passed",
+      "sha256": "15ad07d7444d87060191cdd1b5d8a8e86ca54b7497a2f39c49243dc5181d5088",
+      "bytes": 953
+    },
+    {
+      "path": "architecture/sequences/reverse-validate.mmd",
+      "type": "sequence",
+      "validation": "passed",
+      "sha256": "dce0597fce12d3d11cc1d6b47adca065927476210dd65618d6b0f68c60e428c2",
+      "bytes": 999
+    },
+    {
+      "path": "architecture/system-model.json",
+      "type": "system-model",
+      "validation": "passed",
+      "sha256": "409a3a8f3666b5cb55901eb9f85e03d9056dea323a3dab2bca5700c5b3f5d94c",
+      "bytes": 9322
+    },
+    {
+      "path": "architecture/traceability.md",
+      "type": "traceability",
+      "validation": "passed",
+      "sha256": "923e5c4ff737815ef3eba68f99d1293e44a301830ebff7c9c4eb9cf1e16cb965",
+      "bytes": 3908
+    }
+  ],
+  "warnings": [],
+  "unknowns": []
+}

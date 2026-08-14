@@ -1,6 +1,6 @@
 ---
 name: archify
-description: Create polished, validated architecture, workflow, sequence, data-flow, and lifecycle/state diagrams as explorable standalone HTML with inline SVG, dark/light themes, optional trace motion, and PNG/JPEG/WebP/SVG/WebM export. Accept plain-language requirements or pasted Mermaid flowchart, sequenceDiagram, and stateDiagram input; inspect repository evidence when the diagram must reflect real code. Use when the user asks to visualize system architecture, infrastructure, cloud/security/network topology, technical workflows, API call sequences, request lifecycles, data pipelines, ETL/ELT, data lineage, state machines, or to convert/beautify Mermaid.
+description: Create polished, validated architecture, workflow, sequence, data-flow, and lifecycle/state diagrams as explorable standalone HTML with inline SVG, dark/light themes, optional trace motion, and PNG/JPEG/WebP/SVG/WebM export. Accept plain-language requirements or pasted Mermaid flowchart, sequenceDiagram, and stateDiagram input; inspect repository evidence when the diagram must reflect real code. Use when the user asks to visualize system architecture, infrastructure, cloud/security/network topology, technical workflows, API call sequences, request lifecycles, data pipelines, ETL/ELT, data lineage, state machines, or to convert/beautify Mermaid. Also use to reverse-engineer an existing repository into evidence-backed Docs-as-Code: inventory, evidence index, canonical system model, C4, OpenAPI, retrospective ADRs, traceability, coverage, and a frozen manifest.
 license: MIT
 metadata:
   version: "2.14"
@@ -97,6 +97,31 @@ node bin/archify.mjs preview <type> <input>.json <output>.html --quality showcas
 ```
 
 Never start preview by default. Read `references/delivery-contract.md` when using preview, repository evidence, export receipts, visual review, or post-commit opening.
+
+## Reverse engineering an existing repository
+
+When the request is to document, audit, or reverse-engineer a real codebase rather than draw a described system, produce evidence-backed Docs-as-Code instead of a single diagram. Read `references/reverse-engineering-contract.md` before the first artifact.
+
+Bounded path:
+
+1. Inventory first. Never start at the diagram.
+
+   ```bash
+   node bin/archify.mjs reverse inventory --repo-root <repository> --out docs/architecture/repository-inventory.md
+   ```
+
+2. Write `docs/architecture/evidence.json`, then the canonical `docs/architecture/system-model.json`. Every element and relationship carries `status: observed|inferred|unknown`; `observed` and `inferred` cite evidence ids, and each cited evidence entry lists that id back in `supports`. A relationship needs its own evidence: two components existing never proves they communicate.
+3. Generate only the artifacts the repository supports — C4, sequences, data flows, lifecycles, dependencies, deployment, `docs/api/openapi.yaml`, `architecture.md` (arc42), `domain.md`, retrospective ADRs, `traceability.md`, `coverage.md`. Each `.mmd` declares `%% archify:artifact`, `%% archify:elements`, and `%% archify:relationships` headers.
+4. Validate, correct only the diagnosed subject, validate again, then freeze:
+
+   ```bash
+   node bin/archify.mjs reverse validate docs --repo-root <repository> --json
+   node bin/archify.mjs reverse freeze docs --repo-root <repository> --json
+   ```
+
+   `freeze` refuses to write `manifest.json` while errors remain, and a later `validate` reports any artifact edited after acceptance.
+
+Never infer runtime causality from folder names, class names, or framework convention. Missing facts stay `Not identified from repository evidence.`; secret values are always `<redacted>`. Report only what the receipts prove.
 
 ## Optional viewer capabilities
 
