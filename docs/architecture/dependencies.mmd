@@ -1,0 +1,23 @@
+%% archify:artifact dependencies
+%% archify:elements cmp-cli, cmp-typed-renderers, cmp-renderer-runtime, cmp-schema-validators, cmp-repository-evidence, cmp-architecture-delta, cmp-visual-check, cmp-preview, cmp-reverse-pipeline
+%% archify:relationships rel-cli-renderers, rel-cli-delta, rel-cli-reverse, rel-cli-visual, rel-cli-preview, rel-renderers-runtime, rel-runtime-validators, rel-runtime-evidence
+%% archify:note Edges are real imports or spawned processes, not directory adjacency.
+flowchart TD
+    cli[bin/archify.mjs]
+    renderers[renderers/type/render-type.mjs]
+    runtime[renderers/shared/cli.mjs]
+    validators[renderers/shared/validator.mjs]
+    evidence[renderers/shared/repository-evidence.mjs]
+    delta[delta/architecture-delta.mjs]
+    visual[bin/visual-check.mjs]
+    preview[bin/preview.mjs]
+    reverse[reverse/bundle.mjs]
+
+    cli --> renderers
+    cli --> delta
+    cli --> reverse
+    cli --> visual
+    cli --> preview
+    renderers --> runtime
+    runtime --> validators
+    runtime --> evidence

@@ -1,0 +1,23 @@
+%% archify:artifact c4-container
+%% archify:elements cmp-cli, cmp-typed-renderers, cmp-renderer-runtime, cmp-schema-validators, cmp-repository-evidence, cmp-artifact-checker, cmp-reverse-pipeline, art-html, ext-git
+%% archify:relationships rel-cli-renderers, rel-cli-checker, rel-cli-artifact, rel-cli-reverse, rel-renderers-runtime, rel-runtime-validators, rel-runtime-evidence, rel-evidence-git, rel-reverse-git
+flowchart LR
+    cli[Archify CLI]
+    renderers[Typed renderers]
+    runtime[Shared renderer runtime]
+    validators[Standalone schema validators]
+    evidence[Repository evidence verifier]
+    checker[Final artifact checker]
+    reverse[Reverse Docs-as-Code pipeline]
+    artifact[(Delivered HTML artifact)]
+    git[Git]
+
+    cli -->|spawns renderer process| renderers
+    renderers -->|loadDiagram, writeDiagram| runtime
+    runtime -->|validateSchema| validators
+    runtime -->|verifyRepositoryEvidence| evidence
+    evidence -->|process| git
+    cli -->|checks candidate| checker
+    cli -->|renames verified candidate| artifact
+    cli -->|reverse validate, freeze| reverse
+    reverse -->|resolves evidence at revision| git

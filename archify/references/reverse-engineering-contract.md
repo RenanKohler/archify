@@ -189,6 +189,8 @@ node bin/archify.mjs reverse validate docs --repo-root <repository> --json
 node bin/archify.mjs reverse freeze docs --repo-root <repository> --json
 ```
 
+Both commands take the documentation root and consider only its `architecture/` and `api/` subtrees, so a landing page, a generated gallery, or images living beside the bundle are neither validated nor frozen.
+
 `reverse validate` parses every artifact (JSON, YAML/OpenAPI, Mermaid), verifies evidence against the pinned revision, checks internal links, checks the traceability matrix, checks cross-artifact consistency, and scans for leaked secret values. `--strict` promotes missing contract artifacts from warning to error; `freeze` always runs strict, refuses to write a manifest while errors remain, and then writes `manifest.json` with a SHA-256 per artifact plus the repository revision, the collected warnings, and the collected unknowns.
 
 Re-running `reverse validate` on a frozen bundle compares each artifact against the manifest hash, so an edit after acceptance is reported as `FROZEN_ARTIFACT_MODIFIED`. Do not change an accepted artifact without running the pipeline again.

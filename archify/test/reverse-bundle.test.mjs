@@ -304,6 +304,25 @@ test('missing contract artifacts warn during validate and block freeze', () => {
   }, { 'architecture/coverage.md': null });
 });
 
+test('an unrelated site beside the bundle is neither validated nor frozen', () => {
+  withBundle(({ root, docsRoot }) => {
+    write(docsRoot, 'index.html', '<!doctype html><p>landing page</p>');
+    write(docsRoot, 'assets/broken.md', '[missing](./nowhere.md)\n\nDATABASE_PASSWORD=sup3rs3cretvalue\n');
+
+    const receipt = run(['reverse', 'validate', docsRoot, '--repo-root', root, '--json']).receipt;
+    assert.equal(receipt.ok, true, JSON.stringify(receipt.diagnostics, null, 2));
+    assert.equal(receipt.artifacts.some((entry) => entry.path.startsWith('assets/')), false);
+    assert.equal(receipt.artifacts.some((entry) => entry.path === 'index.html'), false);
+
+    const frozen = run(['reverse', 'freeze', docsRoot, '--repo-root', root, '--json']).receipt;
+    assert.equal(frozen.frozen, true);
+    const manifest = JSON.parse(fs.readFileSync(path.join(docsRoot, 'architecture/manifest.json'), 'utf8'));
+    assert.ok(manifest.artifacts.every((entry) => (
+      entry.path.startsWith('architecture/') || entry.path.startsWith('api/')
+    )));
+  });
+});
+
 test('the inventory command writes a bounded observed markdown surface', () => {
   withBundle(({ root, docsRoot }) => {
     const target = path.join(docsRoot, 'architecture/repository-inventory.md');

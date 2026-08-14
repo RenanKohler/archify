@@ -150,7 +150,13 @@ export function validateBundle({ docsRoot, repoRoot, strict = false, checkFrozen
   }
   const repository = opened.ok ? opened.repository : null;
 
-  const files = walk(resolvedDocs);
+  // The bundle owns `architecture/` and `api/` only. A documentation root may
+  // also carry an unrelated site (landing pages, generated galleries, images);
+  // hashing those into the manifest would make an accepted bundle drift for
+  // reasons that have nothing to do with the architecture it describes.
+  const files = walk(resolvedDocs).filter((relativePath) => (
+    relativePath.startsWith('architecture/') || relativePath.startsWith('api/')
+  ));
   const fileSet = new Set(files);
 
   for (const required of [EVIDENCE_INDEX, SYSTEM_MODEL]) {

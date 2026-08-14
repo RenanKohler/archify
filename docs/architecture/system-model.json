@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "elements": [
+    {
+      "id": "act-agent",
+      "name": "Authoring agent",
+      "kind": "actor",
+      "status": "inferred",
+      "evidence": ["ev-skill-entry"]
+    },
+    {
+      "id": "act-reader",
+      "name": "Artifact reader",
+      "kind": "actor",
+      "status": "inferred",
+      "evidence": ["ev-viewer-template"]
+    },
+    {
+      "id": "sys-archify",
+      "name": "Archify skill package",
+      "kind": "system",
+      "status": "observed",
+      "evidence": ["ev-package-manifest"]
+    },
+    {
+      "id": "cmp-cli",
+      "name": "Archify CLI",
+      "kind": "container",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-cli-router"]
+    },
+    {
+      "id": "cmp-typed-renderers",
+      "name": "Typed renderers",
+      "kind": "container",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": [
+        "ev-renderer-architecture",
+        "ev-renderer-workflow",
+        "ev-renderer-sequence",
+        "ev-renderer-dataflow",
+        "ev-renderer-lifecycle"
+      ]
+    },
+    {
+      "id": "cmp-renderer-runtime",
+      "name": "Shared renderer runtime",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-runtime-template-read"]
+    },
+    {
+      "id": "cmp-schema-validators",
+      "name": "Standalone schema validators",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-generated-validators"]
+    },
+    {
+      "id": "cmp-repository-evidence",
+      "name": "Repository evidence verifier",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-repository-evidence-verify"]
+    },
+    {
+      "id": "cmp-artifact-checker",
+      "name": "Final artifact checker",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-artifact-checker"]
+    },
+    {
+      "id": "cmp-architecture-delta",
+      "name": "Architecture Delta",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-delta-compare"]
+    },
+    {
+      "id": "cmp-visual-check",
+      "name": "Visual-check runtime",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-visual-check-runtime"]
+    },
+    {
+      "id": "cmp-preview",
+      "name": "Last-good live preview",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-preview-server"]
+    },
+    {
+      "id": "cmp-reverse-pipeline",
+      "name": "Reverse Docs-as-Code pipeline",
+      "kind": "container",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": [
+        "ev-reverse-bundle",
+        "ev-reverse-freeze",
+        "ev-reverse-evidence-check",
+        "ev-reverse-mermaid",
+        "ev-reverse-openapi",
+        "ev-reverse-inventory"
+      ]
+    },
+    {
+      "id": "cmp-viewer-template",
+      "name": "Viewer template",
+      "kind": "component",
+      "parent": "sys-archify",
+      "status": "observed",
+      "evidence": ["ev-viewer-template"]
+    },
+    {
+      "id": "art-html",
+      "name": "Delivered HTML artifact",
+      "kind": "datastore",
+      "status": "observed",
+      "evidence": ["ev-delivery-commit"]
+    },
+    {
+      "id": "ext-git",
+      "name": "Git",
+      "kind": "external",
+      "status": "observed",
+      "evidence": ["ev-repository-evidence-git"]
+    },
+    {
+      "id": "ext-chrome",
+      "name": "Chrome / Chromium",
+      "kind": "external",
+      "status": "observed",
+      "evidence": ["ev-visual-check-chrome"]
+    },
+    {
+      "id": "flow-deliver-artifact",
+      "name": "Deliver a validated artifact",
+      "kind": "flow",
+      "status": "observed",
+      "evidence": ["ev-runtime-template-read", "ev-artifact-checker", "ev-delivery-commit"]
+    },
+    {
+      "id": "flow-reverse-validate",
+      "name": "Validate and freeze a Docs-as-Code bundle",
+      "kind": "flow",
+      "status": "observed",
+      "evidence": [
+        "ev-reverse-bundle",
+        "ev-reverse-evidence-check",
+        "ev-reverse-git-spawn",
+        "ev-reverse-mermaid",
+        "ev-reverse-openapi",
+        "ev-reverse-freeze"
+      ]
+    },
+    {
+      "id": "life-delivery-stages",
+      "name": "Delivery stages",
+      "kind": "entity",
+      "status": "observed",
+      "evidence": ["ev-delivery-stages", "ev-delivery-commit"]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel-agent-system",
+      "source": "act-agent",
+      "target": "sys-archify",
+      "type": "cli",
+      "label": "runs validate / deliver",
+      "status": "inferred",
+      "evidence": ["ev-skill-cli-command"]
+    },
+    {
+      "id": "rel-system-artifact",
+      "source": "sys-archify",
+      "target": "art-html",
+      "type": "file-write",
+      "label": "atomically commits",
+      "status": "observed",
+      "evidence": ["ev-delivery-commit"]
+    },
+    {
+      "id": "rel-reader-artifact",
+      "source": "act-reader",
+      "target": "art-html",
+      "type": "browser",
+      "label": "opens self-contained HTML",
+      "status": "inferred",
+      "evidence": ["ev-viewer-template"]
+    },
+    {
+      "id": "rel-system-git",
+      "source": "sys-archify",
+      "target": "ext-git",
+      "type": "process",
+      "label": "verifies pinned sources",
+      "status": "observed",
+      "evidence": ["ev-repository-evidence-git"]
+    },
+    {
+      "id": "rel-system-chrome",
+      "source": "sys-archify",
+      "target": "ext-chrome",
+      "type": "devtools-pipe",
+      "label": "measures containment",
+      "status": "observed",
+      "evidence": ["ev-visual-check-chrome"]
+    },
+    {
+      "id": "rel-cli-renderers",
+      "source": "cmp-cli",
+      "target": "cmp-typed-renderers",
+      "type": "process",
+      "label": "spawns renderer",
+      "status": "observed",
+      "evidence": ["ev-cli-renderer-path"]
+    },
+    {
+      "id": "rel-cli-checker",
+      "source": "cmp-cli",
+      "target": "cmp-artifact-checker",
+      "type": "process",
+      "label": "checks candidate",
+      "status": "observed",
+      "evidence": ["ev-cli-checker-spawn"]
+    },
+    {
+      "id": "rel-cli-delta",
+      "source": "cmp-cli",
+      "target": "cmp-architecture-delta",
+      "type": "import",
+      "label": "compare command",
+      "status": "observed",
+      "evidence": ["ev-cli-delta-import"]
+    },
+    {
+      "id": "rel-cli-reverse",
+      "source": "cmp-cli",
+      "target": "cmp-reverse-pipeline",
+      "type": "import",
+      "label": "reverse command",
+      "status": "observed",
+      "evidence": ["ev-cli-reverse-import"]
+    },
+    {
+      "id": "rel-cli-visual",
+      "source": "cmp-cli",
+      "target": "cmp-visual-check",
+      "type": "import",
+      "label": "visual-check command",
+      "status": "observed",
+      "evidence": ["ev-cli-visual-import"]
+    },
+    {
+      "id": "rel-cli-preview",
+      "source": "cmp-cli",
+      "target": "cmp-preview",
+      "type": "import",
+      "label": "preview command",
+      "status": "observed",
+      "evidence": ["ev-cli-preview-import"]
+    },
+    {
+      "id": "rel-cli-artifact",
+      "source": "cmp-cli",
+      "target": "art-html",
+      "type": "file-write",
+      "label": "renames verified candidate",
+      "status": "observed",
+      "evidence": ["ev-delivery-commit"]
+    },
+    {
+      "id": "rel-renderers-runtime",
+      "source": "cmp-typed-renderers",
+      "target": "cmp-renderer-runtime",
+      "type": "import",
+      "label": "loadDiagram / writeDiagram",
+      "status": "observed",
+      "evidence": ["ev-renderer-architecture"]
+    },
+    {
+      "id": "rel-runtime-validators",
+      "source": "cmp-renderer-runtime",
+      "target": "cmp-schema-validators",
+      "type": "import",
+      "label": "validateSchema",
+      "status": "observed",
+      "evidence": ["ev-runtime-validator-import"]
+    },
+    {
+      "id": "rel-runtime-evidence",
+      "source": "cmp-renderer-runtime",
+      "target": "cmp-repository-evidence",
+      "type": "import",
+      "label": "verifyRepositoryEvidence",
+      "status": "observed",
+      "evidence": ["ev-runtime-evidence-import"]
+    },
+    {
+      "id": "rel-runtime-template",
+      "source": "cmp-renderer-runtime",
+      "target": "cmp-viewer-template",
+      "type": "file-read",
+      "label": "reads assets/template.html",
+      "status": "observed",
+      "evidence": ["ev-runtime-template-read"]
+    },
+    {
+      "id": "rel-evidence-git",
+      "source": "cmp-repository-evidence",
+      "target": "ext-git",
+      "type": "process",
+      "label": "cat-file / show",
+      "status": "observed",
+      "evidence": ["ev-repository-evidence-git"]
+    },
+    {
+      "id": "rel-reverse-git",
+      "source": "cmp-reverse-pipeline",
+      "target": "ext-git",
+      "type": "process",
+      "label": "resolves evidence at revision",
+      "status": "observed",
+      "evidence": ["ev-reverse-git-spawn"]
+    },
+    {
+      "id": "rel-visual-chrome",
+      "source": "cmp-visual-check",
+      "target": "ext-chrome",
+      "type": "devtools-pipe",
+      "label": "containment and captures",
+      "status": "observed",
+      "evidence": ["ev-visual-check-chrome"]
+    }
+  ]
+}

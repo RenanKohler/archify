@@ -1,0 +1,20 @@
+%% archify:artifact sequence
+%% archify:elements act-agent, cmp-cli, cmp-reverse-pipeline, ext-git, flow-reverse-validate
+%% archify:relationships rel-cli-reverse, rel-reverse-git
+%% archify:note Ordered from validateBundle and freezeBundle in archify/reverse/bundle.mjs.
+sequenceDiagram
+    participant Agent
+    participant CLI
+    participant Pipeline
+    participant Git
+
+    Agent->>CLI: reverse validate <docs> --repo-root <repository>
+    CLI->>Pipeline: validateBundle(docsRoot, repoRoot)
+    Pipeline->>Git: resolve pinned revision and evidence blobs
+    Git-->>Pipeline: file contents or missing-object failure
+    Pipeline->>Pipeline: parse Mermaid, OpenAPI, JSON, links, secrets
+    Pipeline-->>CLI: diagnostics, coverage, unknowns
+    CLI-->>Agent: receipt; non-zero exit while errors remain
+    Agent->>CLI: reverse freeze <docs> --repo-root <repository>
+    CLI->>Pipeline: freezeBundle writes manifest.json with SHA-256 per artifact
+    Pipeline-->>Agent: frozen manifest or refusal

@@ -1,0 +1,18 @@
+%% archify:artifact lifecycle
+%% archify:elements life-delivery-stages, art-html
+%% archify:note States are the exact stage values reported by reportDeliveryFailure and the commit path in archify/bin/archify.mjs.
+stateDiagram-v2
+    [*] --> input
+    input --> prepare: specification parsed
+    prepare --> render: candidate directory and snapshot created
+    render --> check: renderer exited 0
+    check --> receipt: all artifact checks passed
+    receipt --> commit: receipt built
+    commit --> [*]: candidate renamed onto the target
+    input --> failed: unreadable or invalid JSON
+    prepare --> failed: unsafe output path or unwritable directory
+    render --> failed: renderer diagnostics
+    check --> failed: artifact check failed
+    receipt --> failed: unreadable candidate or receipt
+    commit --> failed: rename rejected
+    failed --> [*]: previous artifact preserved

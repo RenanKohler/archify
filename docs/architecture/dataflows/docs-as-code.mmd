@@ -1,0 +1,20 @@
+%% archify:artifact dataflow
+%% archify:elements cmp-reverse-pipeline, ext-git, flow-reverse-validate
+%% archify:relationships rel-reverse-git
+%% archify:note Stages follow buildInventory, validateEvidenceIndex, validateSystemModel, and freezeBundle.
+flowchart LR
+    repository[Repository at pinned revision]
+    git[Git]
+    inventory[repository-inventory.md]
+    evidence[evidence.json]
+    model[system-model.json]
+    artifacts[Mermaid, OpenAPI, arc42, ADRs]
+    manifest[manifest.json]
+
+    repository -->|git ls-tree| git
+    git -->|tracked files| inventory
+    inventory -->|inspected facts| evidence
+    evidence -->|cited ids| model
+    model -->|declared ids| artifacts
+    artifacts -->|validated bytes| manifest
+    git -->|blob, line range, symbol| evidence
