@@ -267,6 +267,27 @@ See the [deployment view](deployment.mmd).
   });
 });
 
+test('a prefixed credential assignment is caught, and credential prose is not', () => {
+  withBundle(({ root, docsRoot }) => {
+    const receipt = run(['reverse', 'validate', docsRoot, '--repo-root', root, '--json']).receipt;
+    const leaks = receipt.diagnostics.filter((entry) => entry.contractCode === 'SECRET_LEAKED');
+    assert.deepEqual(leaks.map((entry) => entry.subject.line), [5, 7]);
+    assert.equal(JSON.stringify(receipt).includes('npm_9fQ2xLmTb7WcV1s0KpR4Ye8Zu'), false);
+  }, {
+    'architecture/coverage.md': `# Coverage
+
+Controllers: 1/1
+
+NPM_TOKEN=npm_9fQ2xLmTb7WcV1s0KpR4Ye8Zu
+
+DATABASE_PASSWORD=sup3rs3cretvalue
+
+The release job reads a bearer token: Authorization headers are set by the caller.
+Rotation is documented at token: rotation-playbook.
+`,
+  });
+});
+
 test('a redacted secret and a documented environment variable stay clean', () => {
   withBundle(({ root, docsRoot }) => {
     const receipt = run(['reverse', 'validate', docsRoot, '--repo-root', root, '--json']).receipt;

@@ -35,9 +35,12 @@ const SECRET_PATTERNS = [
   { code: 'credential-in-url', pattern: /\b[a-z][a-z0-9+.-]*:\/\/[^\s/@:]+:[^\s/@]+@/i },
   {
     code: 'assigned-secret',
-    // A credential name may be prefixed (DATABASE_PASSWORD, apiKey), so the
-    // leading word boundary is written explicitly instead of relying on \b.
-    pattern: /(?:^|[^A-Za-z0-9_])[A-Za-z0-9_.-]*(?:password|passwd|pwd|secret|api[_-]?key|access[_-]?token)\s*[:=]\s*(?!["']?(?:<redacted>|redacted|null|""|''|\$|\{|\*|env:|process\.env))["']?[^\s"'`<>,;)]{8,}/i,
+    // A credential name may be prefixed (DATABASE_PASSWORD, NPM_TOKEN, apiKey),
+    // so the leading word boundary is written explicitly instead of relying on
+    // \b. The value must look like a credential rather than prose: at least
+    // eight unbroken characters carrying both a digit and a letter. Redacted,
+    // empty, and environment-reference values are documentation, not leaks.
+    pattern: /(?:^|[^A-Za-z0-9_])[A-Za-z0-9_.-]*(?:password|passwd|pwd|secret|token|credential|passphrase|api[_-]?key)\s*[:=]\s*(?!["']?(?:<|\$|\{|\*|redacted|null|""|''|env:|process\.env))["']?(?=[^\s"'`<>,;)]*\d)(?=[^\s"'`<>,;)]*[A-Za-z])[^\s"'`<>,;)]{8,}/i,
   },
 ];
 

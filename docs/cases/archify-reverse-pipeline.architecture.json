@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Archify — geração validada e engenharia reversa",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/RenanKohler/archify",
+      "revision": "a18bd21283dac485ff68bc74f000b23c6e0dbb33"
+    },
+    "views": [
+      {
+        "id": "caminho-de-entrega",
+        "label": "Caminho de entrega",
+        "focus": [
+          "agente",
+          "cli",
+          "renderers",
+          "artefato",
+          "leitor"
+        ],
+        "note": "Do comando do agente até o HTML autocontido que o leitor abre."
+      },
+      {
+        "id": "aceitacao",
+        "label": "Aceitação antes da entrega",
+        "focus": [
+          "cli",
+          "runtime",
+          "validadores",
+          "checker"
+        ],
+        "note": "Schema, evidência e checagem final do artefato correm antes do commit atômico."
+      },
+      {
+        "id": "engenharia-reversa",
+        "label": "Engenharia reversa",
+        "focus": [
+          "cli",
+          "reverse",
+          "git"
+        ],
+        "note": "O pipeline resolve cada evidência contra o Git na revisão fixada."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "agente",
+      "type": "external",
+      "label": "Agente de autoria",
+      "sublabel": "Claude Code, Cursor, Codex",
+      "pos": [
+        40,
+        340
+      ],
+      "size": [
+        140,
+        64
+      ],
+      "sources": [
+        {
+          "path": "archify/SKILL.md",
+          "label": "contrato da skill"
+        }
+      ]
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "Archify CLI",
+      "sublabel": "bin/archify.mjs",
+      "pos": [
+        320,
+        340
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "13 comandos",
+      "sources": [
+        {
+          "path": "archify/bin/archify.mjs",
+          "label": "roteamento de comandos"
+        }
+      ]
+    },
+    {
+      "id": "renderers",
+      "type": "backend",
+      "label": "Renderers tipados",
+      "sublabel": "5 tipos de diagrama",
+      "pos": [
+        620,
+        340
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "sources": [
+        {
+          "path": "archify/renderers/architecture/render-architecture.mjs",
+          "label": "renderer de arquitetura"
+        }
+      ]
+    },
+    {
+      "id": "artefato",
+      "type": "frontend",
+      "label": "Artefato HTML",
+      "sublabel": "SVG inline, autocontido",
+      "pos": [
+        930,
+        340
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "sources": [
+        {
+          "path": "archify/assets/template.html",
+          "label": "template do viewer"
+        }
+      ]
+    },
+    {
+      "id": "leitor",
+      "type": "external",
+      "label": "Leitor",
+      "sublabel": "Navegador",
+      "pos": [
+        1230,
+        342
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "Runtime compartilhado",
+      "sublabel": "renderers/shared/cli.mjs",
+      "pos": [
+        620,
+        110
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "sources": [
+        {
+          "path": "archify/renderers/shared/cli.mjs",
+          "label": "carga e validação"
+        }
+      ]
+    },
+    {
+      "id": "validadores",
+      "type": "security",
+      "label": "Validadores de schema",
+      "sublabel": "standalone, zero dependência",
+      "pos": [
+        930,
+        110
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "sources": [
+        {
+          "path": "archify/renderers/shared/validator.mjs",
+          "label": "validateSchema"
+        }
+      ]
+    },
+    {
+      "id": "checker",
+      "type": "backend",
+      "label": "Checker de artefato",
+      "sublabel": "9 checagens + composição",
+      "pos": [
+        620,
+        570
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "sources": [
+        {
+          "path": "archify/scripts/check-render-output.mjs",
+          "label": "checagem final"
+        }
+      ]
+    },
+    {
+      "id": "reverse",
+      "type": "backend",
+      "label": "Pipeline reverse",
+      "sublabel": "inventory · validate · freeze",
+      "pos": [
+        320,
+        570
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "Docs-as-Code",
+      "sources": [
+        {
+          "path": "archify/reverse/bundle.mjs",
+          "label": "validateBundle"
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "type": "external",
+      "label": "Git",
+      "sublabel": "revisão fixada",
+      "pos": [
+        50,
+        572
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "archify/reverse/model.mjs",
+          "label": "resolução de evidência"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Pacote da skill — executa sem npm install",
+      "wraps": [
+        "cli",
+        "renderers",
+        "runtime",
+        "validadores",
+        "checker",
+        "reverse"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "agente-cli",
+      "from": "agente",
+      "to": "cli",
+      "label": "validate / deliver",
+      "variant": "emphasis"
+    },
+    {
+      "id": "cli-renderers",
+      "from": "cli",
+      "to": "renderers",
+      "label": "spawn do renderer",
+      "variant": "emphasis"
+    },
+    {
+      "id": "renderers-artefato",
+      "from": "renderers",
+      "to": "artefato",
+      "label": "escreve candidato",
+      "variant": "emphasis"
+    },
+    {
+      "id": "leitor-artefato",
+      "from": "leitor",
+      "to": "artefato",
+      "label": "abre no navegador"
+    },
+    {
+      "id": "renderers-runtime",
+      "from": "renderers",
+      "to": "runtime",
+      "label": "loadDiagram",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "runtime-validadores",
+      "from": "runtime",
+      "to": "validadores",
+      "label": "validateSchema"
+    },
+    {
+      "id": "cli-checker",
+      "from": "cli",
+      "to": "checker",
+      "label": "checa candidato"
+    },
+    {
+      "id": "cli-reverse",
+      "from": "cli",
+      "to": "reverse",
+      "label": "reverse validate",
+      "variant": "dashed",
+      "labelDy": 48
+    },
+    {
+      "id": "reverse-git",
+      "from": "reverse",
+      "to": "git",
+      "label": "resolve evidência",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Geração",
+      "items": [
+        "O agente escreve JSON tipado; o CLI dispara o renderer do tipo",
+        "O runtime valida schema e evidência antes de qualquer layout"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Aceitação",
+      "items": [
+        "O candidato é renderizado em staging privado ao lado do alvo",
+        "Só depois de todas as checagens o CLI renomeia o candidato sobre o alvo",
+        "Falha preserva o artefato anterior byte a byte"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Engenharia reversa",
+      "items": [
+        "Cada evidência resolve contra o Git na revisão fixada",
+        "freeze registra SHA-256 por artefato e recusa manifesto com erro"
+      ]
+    }
+  ]
+}
